@@ -10,7 +10,11 @@ function User() {
       </h1>
       <hr />
       <Link to="./followers">See Followers</Link>
-      <Outlet />
+      <Outlet
+        context={{
+          nameOfMyUsr: users[Number(userId) - 1].name,
+        }}
+      />
       {/* 
         Outlet은 이 컴포넌트의 자식을 render 할 때 사용된다.
         Followers component가 자식
