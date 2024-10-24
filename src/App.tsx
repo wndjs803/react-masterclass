@@ -60,6 +60,7 @@ body {
 }
 a {
   text-decoration:none;
+  color:inherit; // 부모에게서 가져온다.
 }
 `;
 
