@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -36,8 +36,22 @@ function Coin() {
   const { coinId } = useParams<RouteParams>();
   const [loading, setLoading] = useState(true);
   const { state } = useLocation<RouteState>();
+  const [info, setInfo] = useState({});
+  const [priceInfo, setPriceInfo] = useState({});
   // state가 생성되려면 api를 먼저 호출 되어야 함. 바로 이 페이지 접속 시 안됨
-
+  useEffect(() => {
+    (async () => {
+      const infoData = await (
+        await fetch(`https://api.coinpaprika.com/v1/coins${coinId}`)
+      ).json();
+      const priceData = await (
+        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
+      ).json();
+      setInfo(infoData);
+      setPriceInfo(priceData);
+      setLoading(false);
+    })();
+  }, []);
   return (
     <Container>
       <Header>
