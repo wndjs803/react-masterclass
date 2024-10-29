@@ -1,6 +1,8 @@
 import { useQuery } from "react-query";
 import { fetchCoinHistory } from "../api";
 import ApexChart from "react-apexcharts";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../atom";
 
 interface IHistorical {
   time_open: string;
@@ -14,10 +16,9 @@ interface IHistorical {
 }
 interface ChartProps {
   coinId: string;
-  isDark: boolean;
 }
 // isDark는 App -> Router -> Coin -> Chart로 내려져 왔다. 너무 길고 효율적이지 못함.
-function Chart({ coinId, isDark }: ChartProps) {
+function Chart({ coinId }: ChartProps) {
   const { isLoading, data } = useQuery<IHistorical[]>(
     ["ohlcv", coinId],
     () => fetchCoinHistory(coinId),
@@ -25,7 +26,7 @@ function Chart({ coinId, isDark }: ChartProps) {
       refetchInterval: 10000,
     }
   );
-  console.log(data);
+  const isDark = useRecoilValue(isDarkAtom);
   return (
     <div>
       {isLoading ? (
