@@ -22,8 +22,26 @@ import { useForm } from "react-hook-form";
 //   );
 // }
 
+interface IForm {
+  email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  password1: string;
+}
+
 function ToDoList() {
-  const { register, watch, handleSubmit, formState } = useForm();
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IForm>({
+    defaultValues: {
+      email: "@naver.com",
+    },
+  });
   const onValid = (data: any) => {
     console.log(data);
   };
@@ -31,14 +49,25 @@ function ToDoList() {
   // watch - 등록된 모든 input의 값을 확인할 수 있다.
   // handleSubmit - validation
   // formState - 어떤 오류인지 알려줄 수 있다
-  console.log(formState.errors);
+  console.log(errors);
   return (
     <div>
       <form
         style={{ display: "flex", flexDirection: "column" }}
         onSubmit={handleSubmit(onValid)}
       >
-        <input {...register("email", { required: true })} placeholder="Email" />
+        <input
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^[A-Za-z0-9._%+-]+@naver.com$/,
+              message: "Only naver.con eamils allowed",
+            },
+          })}
+          placeholder="Email"
+        />
+        <span>{errors?.email?.message}</span>
+        {/* <span>{errors?.email?.message as string 기본값이 없으면 as string 없으면 에러남}</span>  */}
         <input
           {...register("firstName", { required: "first name is required" })}
           placeholder="First Name"
