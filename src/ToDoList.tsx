@@ -29,6 +29,7 @@ interface IForm {
   username: string;
   password: string;
   password1: string;
+  extraError?: string;
 }
 
 function ToDoList() {
@@ -37,13 +38,21 @@ function ToDoList() {
     watch,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<IForm>({
     defaultValues: {
       email: "@naver.com",
     },
   });
-  const onValid = (data: any) => {
-    console.log(data);
+  const onValid = (data: IForm) => {
+    if (data.password !== data.password1) {
+      setError(
+        "password1",
+        { message: "Password are not the same" },
+        { shouldFocus: true }
+      );
+      //   setError("extraError", { message: "Server offline" });
+    }
   };
   // register - onChange 이벤트 핸들러 필요 없음, value랑 연결도 해줌
   // watch - 등록된 모든 input의 값을 확인할 수 있다.
@@ -69,7 +78,13 @@ function ToDoList() {
         <span>{errors?.email?.message}</span>
         {/* <span>{errors?.email?.message as string 기본값이 없으면 as string 없으면 에러남}</span>  */}
         <input
-          {...register("firstName", { required: "first name is required" })}
+          {...register("firstName", {
+            required: "first name is required",
+            validate: {
+              noNico: (value) =>
+                !value.includes("nico") ? "no nicos allowed" : true,
+            },
+          })}
           placeholder="First Name"
         />
         <input
@@ -90,11 +105,14 @@ function ToDoList() {
           })}
           placeholder="Password"
         />
+        <span>{errors?.password?.message}</span>
         <input
           {...register("password1", { required: true })}
           placeholder="Password1"
         />
+        <span>{errors?.password1?.message}</span>
         <button>Add</button>
+        <span>{errors?.extraError?.message}</span>
       </form>
     </div>
   );
