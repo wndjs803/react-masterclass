@@ -23,20 +23,48 @@ import { useForm } from "react-hook-form";
 // }
 
 function ToDoList() {
-  const { register, watch } = useForm();
+  const { register, watch, handleSubmit, formState } = useForm();
+  const onValid = (data: any) => {
+    console.log(data);
+  };
   // register - onChange 이벤트 핸들러 필요 없음, value랑 연결도 해줌
   // watch - 등록된 모든 input의 값을 확인할 수 있다.
-  console.log(watch());
-
+  // handleSubmit - validation
+  // formState - 어떤 오류인지 알려줄 수 있다
+  console.log(formState.errors);
   return (
     <div>
-      <form>
-        <input {...register("email")} placeholder="Email" />
-        <input {...register("firstName")} placeholder="First Name" />
-        <input {...register("lastName")} placeholder="Last Name" />
-        <input {...register("username")} placeholder="Username" />
-        <input {...register("password")} placeholder="Password" />
-        <input {...register("password1")} placeholder="Password1" />
+      <form
+        style={{ display: "flex", flexDirection: "column" }}
+        onSubmit={handleSubmit(onValid)}
+      >
+        <input {...register("email", { required: true })} placeholder="Email" />
+        <input
+          {...register("firstName", { required: "first name is required" })}
+          placeholder="First Name"
+        />
+        <input
+          {...register("lastName", { required: true })}
+          placeholder="Last Name"
+        />
+        <input
+          {...register("username", { required: true })}
+          placeholder="Username"
+        />
+        <input
+          {...register("password", {
+            required: true,
+            minLength: {
+              value: 5,
+              message: "so short",
+            },
+          })}
+          placeholder="Password"
+        />
+        <input
+          {...register("password1", { required: true })}
+          placeholder="Password1"
+        />
         <button>Add</button>
       </form>
     </div>
