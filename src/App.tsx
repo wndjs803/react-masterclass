@@ -48,7 +48,8 @@ function App() {
       <BiggerBox ref={biggerBoxRef}>
         <Box
           drag
-          dragSnapToOrigin
+          dragSnapToOrigin // 가운데로 옮기는 힘
+          dragElastic // 기본값 0.5 1로 갈수록 마우스 포인터대로 움직임
           dragConstraints={biggerBoxRef}
           variants={boxVariants}
           whileHover="hover"
