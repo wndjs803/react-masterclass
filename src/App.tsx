@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useScroll, useTransform } from "framer-motion";
 import { click } from "@testing-library/user-event/dist/click";
 import { useEffect, useRef } from "react";
 
-const Wrapper = styled.div`
-  height: 100vh;
+const Wrapper = styled(motion.div)`
+  height: 200vh;
   width: 100vw;
   display: flex;
   justify-content: center;
@@ -33,13 +33,20 @@ const BiggerBox = styled.div`
 function App() {
   const x = useMotionValue(0); // x값 추적, state가 아님, 리렌더링 되지 않음
   // console.log(x); // 그래서 한 번만 출력
-  const scale = useTransform(x, [-800, 0, 800], [2, 1, 0.1]); //(읽을 값, 인풋, 아웃풋) mapping
-  useEffect(() => {
-    x.onChange(() => console.log(x.get()));
-  }, [x]);
+  const rotateZ = useTransform(x, [-800, 800], [-360, 360]); //(읽을 값, 인풋, 아웃풋) mapping
+  const gradient = useTransform(
+    x,
+    [-800, 800],
+    [
+      "linear-gradient(135deg, rgb(0, 210, 238), rgb(0, 83, 238))",
+      "linear-gradient(135deg, rgb(0, 238, 155), rgb(238, 178, 0))",
+    ]
+  );
+  const { scrollYProgress } = useScroll();
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 5]);
   return (
-    <Wrapper>
-      <Box style={{ x, scale }} drag="x" dragSnapToOrigin />
+    <Wrapper style={{ background: gradient }}>
+      <Box style={{ x, rotateZ, scale }} drag="x" dragSnapToOrigin />
     </Wrapper>
   );
 }
