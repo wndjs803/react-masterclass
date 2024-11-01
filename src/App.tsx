@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { motion, useMotionValue } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { click } from "@testing-library/user-event/dist/click";
 import { useEffect, useRef } from "react";
 
@@ -33,13 +33,13 @@ const BiggerBox = styled.div`
 function App() {
   const x = useMotionValue(0); // x값 추적, state가 아님, 리렌더링 되지 않음
   // console.log(x); // 그래서 한 번만 출력
+  const scale = useTransform(x, [-800, 0, 800], [2, 1, 0.1]); //(읽을 값, 인풋, 아웃풋) mapping
   useEffect(() => {
     x.onChange(() => console.log(x.get()));
   }, [x]);
   return (
     <Wrapper>
-      <button onClick={() => x.set(200)}>Click Me</button>
-      <Box style={{ x }} drag="x" dragSnapToOrigin />
+      <Box style={{ x, scale }} drag="x" dragSnapToOrigin />
     </Wrapper>
   );
 }
